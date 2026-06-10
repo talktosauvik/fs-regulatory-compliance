@@ -1,0 +1,1 @@
+Internal Policy Auditor Agent — performs deep semantic gap analyses by comparing external regulatory mandates (e.g., SEC Form PF, FINRA AML) against the firm's confidential internal policies. Identifies critical compliance violations and generates remediation task JSONs for IT handoff.
