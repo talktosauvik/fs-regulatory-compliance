@@ -12,28 +12,44 @@ Successfully presented at customer Executive Briefing Centers (EBC) as a premium
 
 ---
 
-## 🏗️ Multi-Agent Swarm Architecture
+## 🏗️ System Architecture
 
-The core orchestration operates entirely through event-driven, serverless A2A microservices located in the [`agents/`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/agents) suite. Each specialized sub-agent handles a distinct lifecycle phase:
+The project operates on a modular multi-agent orchestration swarm hosted entirely through event-driven A2A microservices under the [`agents/`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/agents) suite:
 
 ```mermaid
 graph TD
-    User([User / Gemini Enterprise Hub]) -->|Initiates Audit Flow| Orc[fs-orchestrator]
-    Orc -->|1. Extracts FSI Rules| Intel[fs-regulatory-intel]
-    Intel -->|Returns Base Mandates| Orc
-    Orc -->|2. Audits Internal Manuals| Aud[fs-policy-auditor]
-    Aud -->|Generates Premium UI Cards| User
-    Aud -->|3. Writes JSON Spec to GCS| GCS[(GCP GCS Task Bucket)]
-    User -->|4. Trigger Sprint Creator| Jira[fs-jira-agent]
-    Jira -->|Reads Payload from GCS| GCS
-    Jira -->|Executes Sequential Batch Looping| Board[Live Jira SCRUM Board]
+    Client["Client / Gemini Enterprise Dashboard"] -->|Sends Query| Orc["Coordinator Orchestrator Agent"]
+    
+    Orc --> TriageIntel["Delegates Mandate Extraction"]
+    TriageIntel --> Intel["Regulatory Intel Sub-Agent"]
+    Intel --> QueryRegs["Parses Base Rules"]
+    QueryRegs --> Regs[("External Regulations (SEC / FINRA)")]
+    
+    Orc --> TriageAuditor["Delegates Policy Gap Analysis"]
+    TriageAuditor --> Auditor["Policy Auditor Sub-Agent"]
+    Auditor --> QueryManual["Audits Internal Manuals"]
+    QueryManual --> GCS[("GCS Task Storage Bucket")]
+    
+    Orc --> TriageJira["Delegates Engineering Sprints"]
+    TriageJira --> Jira["Jira Dev Sub-Agent"]
+    Jira --> QueryBoard["Sequential Batch Looping"]
+    QueryBoard --> Board[("Live Jira SCRUM Board")]
 ```
 
-### Core Microservices Overview
+> 📁 **Visual Architecture & Media Portfolio**: Explore our dedicated [`arch/`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/arch) directory for master architecture diagrams and full EBC slide presentation decks:
+> * 🎨 **[Definitive Master System Architecture Diagram](./arch/system_architecture_diagram.png)**
+> * 🎨 **[Definitive Tool-Level Agentic Architecture Workflow](./arch/agentic_architecture_workflow.png)**
+> * 🎨 **[EBC System Architecture Overview](./arch/ebc_architecture_overview.png)**
+> * 🎨 **[EBC FSI Compliance Pipeline](./arch/ebc_compliance_pipeline.png)**
+> * 🎨 **[EBC Multi-Agent Handoff Workflow](./arch/ebc_multi_agent_handoff.png)**
 
-*   🤖 **[`fs-orchestrator`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/agents/fs-orchestrator)**: The master multi-agent coordinator that manages contextual state, evaluates user requests, and delegates execution.
+For a deep-dive on sub-agent prompt strategies, state managers, and authorization callback architectures, see the independent agent guides below.
+
+### Core Microservices Breakdown
+
+*   🤖 **[`fs-orchestrator`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/agents/fs-orchestrator)**: The master multi-agent coordinator that manages contextual state, evaluates user requests, and delegates execution across the specialist swarm.
 *   📜 **[`fs-regulatory-intel`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/agents/fs-regulatory-intel)**: The rule extraction engine specialized in deep-parsing external SEC Form PF instructions, FINRA Rule 3310 requirements, and complex investment structures.
-*   🔍 **[`fs-policy-auditor`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/agents/fs-policy-auditor)**: Performs multi-stage gap analysis against internal baseline manuals. It formats results into an elegant 5-column schema, generates interactive **A2UI Compliance Cards**, and writes structured `remediation_spec.json` payloads to Google Cloud Storage.
+*   🔍 **[`fs-policy-auditor`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/agents/fs-policy-auditor)**: Performs multi-stage gap analysis against internal baseline manuals. It formats results into an elegant 5-column schema (`Original Text` vs. `Altered Text`), generates interactive **A2UI Compliance Cards**, and writes structured `remediation_spec.json` payloads to Google Cloud Storage.
 *   🎫 **[`fs-jira-agent`](file:///usr/local/google/home/iamsouvik/fs-regulatory-compliance/agents/fs-jira-agent)**: A developer assistant that automatically reads GCS payloads, dynamically loops through all remediation tasks, and files separate, fully-mapped support tickets directly onto engineering SCRUM Sprint boards.
 
 ---
@@ -41,7 +57,7 @@ graph TD
 ## 📊 Premium Visual Highlights
 
 *   **Mixed-Table Gap Analysis**: Native prompt structures enforce a unified 5-column audit table featuring **`Original Text`** (base external rule or firm baseline) and **`Altered Text`** (mandated compliance target).
-*   **A2UI Visual Dashboards**: Renders custom visual dashboard cards inside Gemini Enterprise, featuring complete dynamic priority headers (**`🔴 CRITICAL`**, **`🔴 HIGH`**, **`🟡 MEDIUM`**, **`🟢 LOW`**).
+*   **A2UI Visual Dashboards**: Renders custom visual dashboard cards inside Gemini Enterprise, featuring complete dynamic priority header badges (**`🔴 CRITICAL`**, **`🔴 HIGH`**, **`🟡 MEDIUM`**, **`🟢 LOW`**).
 *   **Automated Batch Jira Looping**: Replaces fragile monolithic JSON ticket dumps with dynamic Python sequential looping, filing individual trackable Jira tasks mapped directly to active Sprints (`SCRUM Sprint 0`) and Epics (`GE App Demo`).
 
 ---
@@ -60,7 +76,7 @@ graph TD
 
 1.  **Clone the Repository**:
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/cloud-gtm/fs-regulatory-compliance.git
     cd fs-regulatory-compliance
     ```
 2.  **Configure Environment Variables**: Navigate into each specific sub-agent folder and duplicate `.env.sample` to `.env`. Ensure your GCS bucket name (`vertexai-l300-capstone-dev-handoff`) and Jira board credentials are fully supplied.
