@@ -1,1 +1,0 @@
-Market Research Agent — performs deep web research using Gemini Deep Research to produce detailed, cited reports on market trends, competitive landscapes, and consumer sentiment analysis for a global furniture retailer.

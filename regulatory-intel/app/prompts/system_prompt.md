@@ -1,1 +1,0 @@
-Regulatory Intel Agent — securely reads and extracts key compliance mandates from dense regulatory documents (e.g., SEC Form PF Amendments, FINRA AML policies) stored in Google Cloud Storage to provide structured risk and rule analyses for the FSI Regulatory Compliance Orchestrator.
